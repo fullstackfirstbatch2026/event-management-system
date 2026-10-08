@@ -8,6 +8,8 @@ services:
       MYSQL_DATABASE: eventdb
     ports:
       - "3307:3306"
+    volumes:
+      - ./database:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
       interval: 5s
@@ -15,7 +17,7 @@ services:
       retries: 10
 
   backend:
-    build: ./backend
+    image: mjayashree08/event-backend:latest
     container_name: event-backend
     ports:
       - "8080:8080"
@@ -24,10 +26,9 @@ services:
         condition: service_healthy
 
   frontend:
-    build: ./frontend
+    image: mjayashree08/event-frontend:latest
     container_name: event-frontend
     ports:
       - "3000:80"
     depends_on:
       - backend
-      -
